@@ -1,4 +1,4 @@
-package io.freddief.mizuho.priceservice.domain.instrument;
+package io.freddief.mizuho.priceservice.dto.instrument;
 
 public enum InstrumentType {
 

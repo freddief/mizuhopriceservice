@@ -1,17 +1,18 @@
-package io.freddief.mizuho.priceservice.domain.instrument;
+package io.freddief.mizuho.priceservice.dto.instrument;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-import static io.freddief.mizuho.priceservice.domain.instrument.InstrumentType.DERIVATIVE;
-
 public class Derivative implements Instrument {
-
-    private static final InstrumentType INSTRUMENT_TYPE = DERIVATIVE;
 
     private final String id;
     private final String code;
 
-    public Derivative(String id, String code) {
+    @JsonCreator
+    public Derivative(@JsonProperty("id") String id,
+                      @JsonProperty("code") String code) {
         this.id = id;
         this.code = code;
     }
@@ -24,11 +25,6 @@ public class Derivative implements Instrument {
     @Override
     public String getCode() {
         return code;
-    }
-
-    @Override
-    public InstrumentType getType() {
-        return INSTRUMENT_TYPE;
     }
 
     @Override

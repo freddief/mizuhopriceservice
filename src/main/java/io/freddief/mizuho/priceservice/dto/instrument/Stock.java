@@ -1,17 +1,18 @@
-package io.freddief.mizuho.priceservice.domain.instrument;
+package io.freddief.mizuho.priceservice.dto.instrument;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-import static io.freddief.mizuho.priceservice.domain.instrument.InstrumentType.DERIVATIVE;
-
-public class Derivative implements Instrument {
-
-    private static final InstrumentType INSTRUMENT_TYPE = DERIVATIVE;
+public class Stock implements Instrument {
 
     private final String id;
     private final String code;
 
-    public Derivative(String id, String code) {
+    @JsonCreator
+    public Stock(@JsonProperty("id") String id,
+                 @JsonProperty("code") String code) {
         this.id = id;
         this.code = code;
     }
@@ -27,13 +28,8 @@ public class Derivative implements Instrument {
     }
 
     @Override
-    public InstrumentType getType() {
-        return INSTRUMENT_TYPE;
-    }
-
-    @Override
     public String toString() {
-        return "Derivative{" +
+        return "Stock{" +
             "id='" + id + '\'' +
             ", code='" + code + '\'' +
             '}';
@@ -43,9 +39,9 @@ public class Derivative implements Instrument {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Derivative that = (Derivative) o;
-        return Objects.equals(getId(), that.getId()) &&
-            Objects.equals(getCode(), that.getCode());
+        Stock stock = (Stock) o;
+        return Objects.equals(getId(), stock.getId()) &&
+            Objects.equals(getCode(), stock.getCode());
     }
 
     @Override

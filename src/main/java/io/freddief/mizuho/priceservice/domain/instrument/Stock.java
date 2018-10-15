@@ -1,5 +1,7 @@
 package io.freddief.mizuho.priceservice.domain.instrument;
 
+import java.util.Objects;
+
 import static io.freddief.mizuho.priceservice.domain.instrument.InstrumentType.STOCK;
 
 public class Stock implements Instrument {
@@ -29,4 +31,26 @@ public class Stock implements Instrument {
         return INSTRUMENT_TYPE;
     }
 
+    @Override
+    public String toString() {
+        return "Stock{" +
+            "id='" + id + '\'' +
+            ", code='" + code + '\'' +
+            '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        return Objects.equals(getId(), stock.getId()) &&
+            Objects.equals(getCode(), stock.getCode());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getId(), getCode());
+    }
 }

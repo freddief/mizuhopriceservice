@@ -1,13 +1,17 @@
-package io.freddief.mizuho.priceservice.domain.price;
+package io.freddief.mizuho.priceservice.dto.price;
 
-import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
-import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.freddief.mizuho.priceservice.domain.price.CurrencyCode;
+import io.freddief.mizuho.priceservice.dto.event.Event;
+import io.freddief.mizuho.priceservice.dto.instrument.Instrument;
+import io.freddief.mizuho.priceservice.dto.vendor.Vendor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
-public class Price {
+public class Price implements Event {
 
     private final String id;
     private final Instrument instrument;
@@ -16,12 +20,13 @@ public class Price {
     private final BigDecimal price;
     private final CurrencyCode currencyCode;
 
-    public Price(String id,
-                 Instrument instrument,
-                 Vendor vendor,
-                 Instant timestamp,
-                 BigDecimal price,
-                 CurrencyCode currencyCode) {
+    @JsonCreator
+    public Price(@JsonProperty("id") String id,
+                 @JsonProperty("instrument") Instrument instrument,
+                 @JsonProperty("vendor") Vendor vendor,
+                 @JsonProperty("timestamp") Instant timestamp,
+                 @JsonProperty("price") BigDecimal price,
+                 @JsonProperty("currencyCode") CurrencyCode currencyCode) {
         this.id = id;
         this.instrument = instrument;
         this.vendor = vendor;
@@ -30,8 +35,14 @@ public class Price {
         this.currencyCode = currencyCode;
     }
 
+    @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Instant getTimestamp() {
+        return timestamp;
     }
 
     public Instrument getInstrument() {
@@ -40,10 +51,6 @@ public class Price {
 
     public Vendor getVendor() {
         return vendor;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
     }
 
     public BigDecimal getPrice() {

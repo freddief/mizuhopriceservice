@@ -1,4 +1,7 @@
-package io.freddief.mizuho.priceservice.domain.vendor;
+package io.freddief.mizuho.priceservice.dto.vendor;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -7,7 +10,9 @@ public class Vendor {
     private final String id;
     private final String name;
 
-    public Vendor(String id, String name) {
+    @JsonCreator
+    public Vendor(@JsonProperty("id") String id,
+                  @JsonProperty("name") String name) {
         this.id = id;
         this.name = name;
     }
