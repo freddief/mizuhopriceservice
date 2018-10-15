@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.price.Price;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collection;
+import java.util.Map;
 
 @Configuration
 public class Config {
@@ -71,4 +73,13 @@ public class Config {
         return HashBasedTable.create();
     }
 
+    @Bean
+    Map<String, Instrument> instrumentsByIdMap() {
+        return Maps.newHashMap();
+    }
+
+    @Bean
+    Map<String, Vendor> vendorsByIdMap() {
+        return Maps.newHashMap();
+    }
 }

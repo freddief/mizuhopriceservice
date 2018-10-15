@@ -11,7 +11,13 @@
 -- Explain Kafka choice
 
 -- sort deps in POM
--- params for POM
+-- version params for POM
 
 -- logging
 -- error routing for price topic
+
+-- remove from cache after time expired
+
+-- exception Mockito matchers?
+
+-- change jmsComponentAutoAcknowledge?
