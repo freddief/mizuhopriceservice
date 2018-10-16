@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -78,6 +80,34 @@ public class IgGroupPriceServiceTest {
         Price returned = igGroupPriceService.transform(igGroupPrice);
 
         assertThat(returned).isEqualTo(price);
+    }
+
+    @Test
+    public void transformCsvLine_splitsCorrectly() {
+
+        IgGroupPriceService spy = spy(igGroupPriceService);
+
+        spy.transform("CODE,123,GBP");
+
+        verify(spy).transform(new IgGroupPrice(
+            "CODE",
+            "GBP",
+            BigDecimal.valueOf(123)
+        ));
+    }
+
+    @Test
+    public void transformCsvLine_returnsPrice() {
+        Price price = mock(Price.class);
+
+        IgGroupPriceService spy = spy(igGroupPriceService);
+
+        doReturn(price).when(spy).transform(any(IgGroupPrice.class));
+
+        Price returned = spy.transform("CODE,123,GBP");
+
+        assertThat(returned).isEqualTo(price);
+
     }
 
 }

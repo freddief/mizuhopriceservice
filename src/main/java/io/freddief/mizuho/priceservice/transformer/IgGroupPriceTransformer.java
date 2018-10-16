@@ -33,8 +33,8 @@ public class IgGroupPriceTransformer {
             instrumentTransformer.toDto(instrument),
             vendorTransformer.toDto(vendor),
             Instant.now(),
-            igGroupPrice.getPrice().getPrice(),
-            CurrencyCode.valueOf(igGroupPrice.getPrice().getCurrency())
+            igGroupPrice.getPrice(),
+            CurrencyCode.valueOf(igGroupPrice.getCurrencyCode())
         );
 
     }

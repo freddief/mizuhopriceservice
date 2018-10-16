@@ -10,6 +10,8 @@ import io.freddief.mizuho.priceservice.transformer.IgGroupPriceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class IgGroupPriceService {
 
@@ -26,6 +28,15 @@ public class IgGroupPriceService {
         this.vendorRepository = vendorRepository;
         this.instrumentRepository = instrumentRepository;
         this.bloombergPriceTransformer = bloombergPriceTransformer;
+    }
+
+    public Price transform(String priceCsvLine) {
+        String[] split = priceCsvLine.split(",");
+        return transform(new IgGroupPrice(
+            split[0],
+            split[2],
+            new BigDecimal(split[1])
+        ));
     }
 
     public Price transform(IgGroupPrice igGroupPrice) {

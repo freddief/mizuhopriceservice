@@ -3,8 +3,6 @@ package io.freddief.mizuho.priceservice.route;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.freddief.mizuho.priceservice.domain.price.CurrencyCode;
 import io.freddief.mizuho.priceservice.dto.instrument.Stock;
-import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
-import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice.MonetaryAmount;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.dto.vendor.Vendor;
 import io.freddief.mizuho.priceservice.service.IgGroupPriceService;
@@ -33,6 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @UseAdviceWith
 public class IgGroupPriceRouteTest {
 
+    private static final String CSV_FILE =
+        "BARC,1,GBP\n" +
+        "HSBA,12.1,GBP";
+
     @Autowired
     private CamelContext camelContext;
     @Autowired
@@ -52,19 +54,11 @@ public class IgGroupPriceRouteTest {
             }
         });
 
-
-        IgGroupPrice igGroup = new IgGroupPrice(
-            "BARC",
-            new MonetaryAmount(
-                BigDecimal.valueOf(1),
-                "GBP")
-        );
-
         camelContext.start();
 
-        priceEndpoint.expectedMessageCount(1);
+        priceEndpoint.expectedMessageCount(2);
 
-        template.sendBody("direct:input", objectMapper.writeValueAsString(igGroup));
+        template.sendBody("direct:input", CSV_FILE);
 
         priceEndpoint.assertIsSatisfied();
 
@@ -76,6 +70,15 @@ public class IgGroupPriceRouteTest {
         assertThat(price.getPrice()).isEqualTo(BigDecimal.valueOf(1));
         assertThat(price.getVendor()).isEqualTo(new Vendor(IgGroupPriceService.IG_GROUP_VENDOR_ID, "IG Group"));
         assertThat(price.getInstrument()).isEqualTo(new Stock("barclaysStockId", "BARC"));
+
+        Price price2 = objectMapper.readValue(priceEndpoint.getExchanges().get(1).getMessage().getBody(String.class), Price.class);
+
+        assertThat(price2.getId()).isNotNull();
+        assertThat(price2.getTimestamp()).isNotNull();
+        assertThat(price2.getCurrencyCode()).isEqualTo(CurrencyCode.GBP);
+        assertThat(price2.getPrice()).isEqualTo(BigDecimal.valueOf(12.1));
+        assertThat(price2.getVendor()).isEqualTo(new Vendor(IgGroupPriceService.IG_GROUP_VENDOR_ID, "IG Group"));
+        assertThat(price2.getInstrument()).isEqualTo(new Stock("hsbcStockId", "HSBA"));
 
     }
 

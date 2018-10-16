@@ -4,7 +4,6 @@ import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.price.CurrencyCode;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
 import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
-import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice.MonetaryAmount;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +36,8 @@ public class IgGroupPriceTransformerTest {
         Vendor vendor = mock(Vendor.class);
         IgGroupPrice igGroupPrice = new IgGroupPrice(
             "CODE",
-            new MonetaryAmount(
-                BigDecimal.valueOf(12),
-                "GBP"
-            )
+            "GBP",
+            BigDecimal.valueOf(12)
         );
 
         igGroupPriceTransformer.transform(
@@ -59,9 +56,8 @@ public class IgGroupPriceTransformerTest {
         Vendor vendor = mock(Vendor.class);
         IgGroupPrice igGroupPrice = new IgGroupPrice(
             "CODE",
-            new MonetaryAmount(
-                BigDecimal.valueOf(12),
-                "GBP")
+            "GBP",
+            BigDecimal.valueOf(12)
         );
 
         igGroupPriceTransformer.transform(
@@ -82,9 +78,8 @@ public class IgGroupPriceTransformerTest {
         io.freddief.mizuho.priceservice.dto.vendor.Vendor dtoVendor = mock(io.freddief.mizuho.priceservice.dto.vendor.Vendor.class);
         IgGroupPrice igGroupPrice = new IgGroupPrice(
             "CODE",
-            new MonetaryAmount(
-                BigDecimal.valueOf(12),
-            "GBP")
+            "GBP",
+            BigDecimal.valueOf(12)
         );
 
         when(instrumentTransformer.toDto(instrument)).thenReturn(dtoinstrument);

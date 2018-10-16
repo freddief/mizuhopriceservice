@@ -1,6 +1,5 @@
 package io.freddief.mizuho.priceservice.route;
 
-import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.service.IgGroupPriceService;
 import org.apache.camel.builder.RouteBuilder;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class IgGroupPriceRoute extends RouteBuilder {
 
-    public static final String IG_GROUP_FTP_URI = "ftp://admin@127.0.0.1:12345?password=admin&recursive=true";
+    public static final String IG_GROUP_FTP_URI = "ftp://admin@127.0.0.1:12345/file.csv";
 
     private final IgGroupPriceService igGroupPriceService;
 
@@ -24,8 +23,8 @@ public class IgGroupPriceRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from(IG_GROUP_FTP_URI)
-            .unmarshal()
-            .json(JsonLibrary.Jackson, IgGroupPrice.class)
+            .split()
+            .tokenize("\n")
             .bean(igGroupPriceService, "transform")
             .marshal()
             .json(JsonLibrary.Jackson, Price.class)
