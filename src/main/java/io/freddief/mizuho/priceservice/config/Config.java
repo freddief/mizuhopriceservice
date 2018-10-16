@@ -21,11 +21,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Collection;
 import java.util.Map;
 
 @Configuration
+@EnableScheduling
 public class Config {
 
     @Value(value = "${spring.activemq.broker-url}")

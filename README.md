@@ -1,18 +1,19 @@
 -- In memory price repository used HashBasedTable to enable query by Vendor and Instrument
--- May need multi threaded
 -- Domain models for internal app persistence
 -- DTOs for external contracts
 -- Inheritance structure for additional behaviour
 -- Explain Spring integration choice
 -- Explain Kafka choice
 -- reason for modelling Vendor and Instrument
--- Explain JSON not XML
--- explain should make them consumers idempotent
+-- use spring scheduler for cleanUp
 
+-- enhancements:
+-- XML with to use schema validations
+-- Make consumers idempotent
 -- Java docs?
+-- logging
+
 -- sort deps in POM
 -- version params for POM
--- logging
 -- error routing for price topic
 
--- remove from cache after time expired

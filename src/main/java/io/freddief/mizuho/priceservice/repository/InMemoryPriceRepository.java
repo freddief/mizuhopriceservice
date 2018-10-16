@@ -5,12 +5,17 @@ import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.price.Price;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
 
 @Component
 public class InMemoryPriceRepository implements PriceRepository {
+
+    private static final Duration EXPIRY_DURATION = Duration.ofDays(30);
 
     private final Table<Vendor, Instrument, Price> pricesTable;
 
@@ -40,4 +45,13 @@ public class InMemoryPriceRepository implements PriceRepository {
             .values();
     }
 
+    @Override
+    @Scheduled(fixedDelay = 1000)
+    public void cleanUp() {
+        pricesTable.cellSet()
+            .removeIf(cell ->
+                          cell.getValue().getTimestamp()
+                              .isBefore(Instant.now().minus(EXPIRY_DURATION)));
+
+    }
 }

@@ -14,4 +14,6 @@ public interface PriceRepository {
 
     Collection<Price> findPricesByInstrument(Instrument instrument);
 
+    void cleanUp();
+
 }

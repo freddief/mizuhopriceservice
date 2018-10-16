@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.Period;
 import java.util.Collection;
 
 import static io.freddief.mizuho.priceservice.domain.price.CurrencyCode.GBP;
@@ -224,7 +225,6 @@ public class InMemoryPriceRepositoryTest {
 
     }
 
-
     @Test
     public void findPricesByInstrument_whenTwoPricesAdded_returnsMostRecent() {
 
@@ -264,6 +264,55 @@ public class InMemoryPriceRepositoryTest {
         assertThat(returned).containsExactly(
             price2
         );
+
+    }
+
+    @Test
+    public void cleanUp_removesPricesWithTimestampOver30DaysAgo() {
+
+        Stock stock = new Stock("id1",
+                                "BARC");
+
+        Price stock1Price = new Price(
+            "price1",
+            stock,
+            new Vendor(
+                "vendor",
+                "Bloomberg"
+            ),
+            Instant.now().minus(Period.ofDays(31)),
+            BigDecimal.valueOf(1),
+            GBP
+        );
+
+        Price stock1Price2 = new Price(
+            "price2",
+            stock,
+            new Vendor(
+                "vendor2",
+                "IG group"
+            ),
+            Instant.now().minus(Period.ofDays(29)),
+            BigDecimal.valueOf(2),
+            GBP
+        );
+
+
+        InMemoryPriceRepository inMemoryPriceRepository = new InMemoryPriceRepository(HashBasedTable.create());
+
+        inMemoryPriceRepository.add(stock1Price);
+        inMemoryPriceRepository.add(stock1Price2);
+
+        Collection<Price> beforeCleanUp = inMemoryPriceRepository.findPricesByInstrument(stock);
+
+        assertThat(beforeCleanUp).hasSize(2);
+
+        inMemoryPriceRepository.cleanUp();
+
+        Collection<Price> afterCleanUp = inMemoryPriceRepository.findPricesByInstrument(stock);
+
+        assertThat(afterCleanUp).hasSize(1);
+        assertThat(afterCleanUp.iterator().next().getId()).isEqualTo("price2");
 
     }
 
