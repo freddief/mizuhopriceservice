@@ -1,4 +1,4 @@
-package io.freddief.mizuho.priceservice.dto.bloomberg;
+package io.freddief.mizuho.priceservice.dto.price;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

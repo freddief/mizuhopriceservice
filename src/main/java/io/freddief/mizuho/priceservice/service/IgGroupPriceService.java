@@ -2,37 +2,37 @@ package io.freddief.mizuho.priceservice.service;
 
 import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
-import io.freddief.mizuho.priceservice.dto.price.BloombergPrice;
+import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.repository.InstrumentRepository;
 import io.freddief.mizuho.priceservice.repository.VendorRepository;
-import io.freddief.mizuho.priceservice.transformer.BloombergPriceTransformer;
+import io.freddief.mizuho.priceservice.transformer.IgGroupPriceTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BloombergPriceService {
+public class IgGroupPriceService {
 
-    public static final String BLOOMBERG_VENDOR_ID = "bloombergVendorId";
+    public static final String IG_GROUP_VENDOR_ID = "igGroupVendorId";
 
     private final VendorRepository vendorRepository;
     private final InstrumentRepository instrumentRepository;
-    private final BloombergPriceTransformer bloombergPriceTransformer;
+    private final IgGroupPriceTransformer bloombergPriceTransformer;
 
     @Autowired
-    public BloombergPriceService(VendorRepository vendorRepository,
-                                 InstrumentRepository instrumentRepository,
-                                 BloombergPriceTransformer bloombergPriceTransformer) {
+    public IgGroupPriceService(VendorRepository vendorRepository,
+                               InstrumentRepository instrumentRepository,
+                               IgGroupPriceTransformer bloombergPriceTransformer) {
         this.vendorRepository = vendorRepository;
         this.instrumentRepository = instrumentRepository;
         this.bloombergPriceTransformer = bloombergPriceTransformer;
     }
 
-    public Price transform(BloombergPrice bloombergPrice) {
-        Vendor vendor = vendorRepository.findById(BLOOMBERG_VENDOR_ID);
-        Instrument instrument = instrumentRepository.findByCode(bloombergPrice.getCode());
+    public Price transform(IgGroupPrice igGroupPrice) {
+        Vendor vendor = vendorRepository.findById(IG_GROUP_VENDOR_ID);
+        Instrument instrument = instrumentRepository.findByCode(igGroupPrice.getInstrumentCode());
         return bloombergPriceTransformer.transform(
-            bloombergPrice,
+            igGroupPrice,
             instrument,
             vendor
         );

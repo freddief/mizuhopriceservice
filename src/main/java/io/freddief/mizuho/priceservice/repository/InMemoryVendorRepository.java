@@ -3,6 +3,7 @@ package io.freddief.mizuho.priceservice.repository;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
 import io.freddief.mizuho.priceservice.exception.NotFoundException;
 import io.freddief.mizuho.priceservice.service.BloombergPriceService;
+import io.freddief.mizuho.priceservice.service.IgGroupPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class InMemoryVendorRepository implements VendorRepository {
 
     private void init() {
         add(new Vendor(BloombergPriceService.BLOOMBERG_VENDOR_ID, "Bloomberg"));
-        add(new Vendor("igGroupVendorId", "IG Group"));
+        add(new Vendor(IgGroupPriceService.IG_GROUP_VENDOR_ID, "IG Group"));
     }
 
 }

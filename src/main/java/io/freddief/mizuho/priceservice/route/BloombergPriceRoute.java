@@ -1,6 +1,6 @@
 package io.freddief.mizuho.priceservice.route;
 
-import io.freddief.mizuho.priceservice.dto.bloomberg.BloombergPrice;
+import io.freddief.mizuho.priceservice.dto.price.BloombergPrice;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.service.BloombergPriceService;
 import org.apache.camel.builder.RouteBuilder;

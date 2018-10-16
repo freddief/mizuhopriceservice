@@ -3,10 +3,11 @@ package io.freddief.mizuho.priceservice.route;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.freddief.mizuho.priceservice.domain.price.CurrencyCode;
 import io.freddief.mizuho.priceservice.dto.instrument.Stock;
-import io.freddief.mizuho.priceservice.dto.price.BloombergPrice;
+import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
+import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice.MonetaryAmount;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.dto.vendor.Vendor;
-import io.freddief.mizuho.priceservice.service.BloombergPriceService;
+import io.freddief.mizuho.priceservice.service.IgGroupPriceService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @MockEndpoints
 @DirtiesContext
 @UseAdviceWith
-public class BloombergPriceRouteTest {
+public class IgGroupPriceRouteTest {
 
     @Autowired
     private CamelContext camelContext;
@@ -43,26 +44,27 @@ public class BloombergPriceRouteTest {
     private ProducerTemplate template;
 
     @Test
-    public void bloombergPriceRoute() throws Exception {
-
-        camelContext.getRouteDefinitions().get(0).adviceWith(camelContext, new AdviceWithRouteBuilder() {
+    public void igPriceRoute() throws Exception {
+        camelContext.getRouteDefinitions().get(1).adviceWith(camelContext, new AdviceWithRouteBuilder() {
             @Override
             public void configure() throws Exception {
                 replaceFromWith("direct:input");
             }
         });
 
-        camelContext.start();
 
-        BloombergPrice bloombergPrice = new BloombergPrice(
+        IgGroupPrice igGroup = new IgGroupPrice(
             "BARC",
-            BigDecimal.valueOf(1),
-            "GBP"
+            new MonetaryAmount(
+                BigDecimal.valueOf(1),
+                "GBP")
         );
+
+        camelContext.start();
 
         priceEndpoint.expectedMessageCount(1);
 
-        template.sendBody("direct:input", objectMapper.writeValueAsString(bloombergPrice));
+        template.sendBody("direct:input", objectMapper.writeValueAsString(igGroup));
 
         priceEndpoint.assertIsSatisfied();
 
@@ -72,7 +74,7 @@ public class BloombergPriceRouteTest {
         assertThat(price.getTimestamp()).isNotNull();
         assertThat(price.getCurrencyCode()).isEqualTo(CurrencyCode.GBP);
         assertThat(price.getPrice()).isEqualTo(BigDecimal.valueOf(1));
-        assertThat(price.getVendor()).isEqualTo(new Vendor(BloombergPriceService.BLOOMBERG_VENDOR_ID, "Bloomberg"));
+        assertThat(price.getVendor()).isEqualTo(new Vendor(IgGroupPriceService.IG_GROUP_VENDOR_ID, "IG Group"));
         assertThat(price.getInstrument()).isEqualTo(new Stock("barclaysStockId", "BARC"));
 
     }

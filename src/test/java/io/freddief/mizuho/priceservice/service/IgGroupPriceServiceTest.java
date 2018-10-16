@@ -2,11 +2,11 @@ package io.freddief.mizuho.priceservice.service;
 
 import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
-import io.freddief.mizuho.priceservice.dto.price.BloombergPrice;
+import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.repository.InstrumentRepository;
 import io.freddief.mizuho.priceservice.repository.VendorRepository;
-import io.freddief.mizuho.priceservice.transformer.BloombergPriceTransformer;
+import io.freddief.mizuho.priceservice.transformer.IgGroupPriceTransformer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,51 +18,51 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BloombergPriceServiceTest {
+public class IgGroupPriceServiceTest {
 
     @Mock
     private VendorRepository vendorRepository;
     @Mock
     private InstrumentRepository instrumentRepository;
     @Mock
-    private BloombergPriceTransformer bloombergPriceTransformer;
+    private IgGroupPriceTransformer igGroupPriceTransformer;
     @InjectMocks
-    private BloombergPriceService bloombergPriceService;
+    private IgGroupPriceService igGroupPriceService;
 
     @Test
     public void transform_findsVendor() {
-        BloombergPrice bloombergPrice = mock(BloombergPrice.class);
+        IgGroupPrice igGroupPrice = mock(IgGroupPrice.class);
 
-        bloombergPriceService.transform(bloombergPrice);
+        igGroupPriceService.transform(igGroupPrice);
 
-        verify(vendorRepository).findById(BloombergPriceService.BLOOMBERG_VENDOR_ID);
+        verify(vendorRepository).findById(IgGroupPriceService.IG_GROUP_VENDOR_ID);
     }
 
 
     @Test
     public void transform_findsInstrument() {
-        BloombergPrice bloombergPrice = mock(BloombergPrice.class);
+        IgGroupPrice igGroupPrice = mock(IgGroupPrice.class);
 
-        when(bloombergPrice.getCode()).thenReturn("code");
+        when(igGroupPrice.getInstrumentCode()).thenReturn("code");
 
-        bloombergPriceService.transform(bloombergPrice);
+        igGroupPriceService.transform(igGroupPrice);
 
         verify(instrumentRepository).findByCode("code");
     }
 
     @Test
     public void transform_callsTransformer() {
-        BloombergPrice bloombergPrice = mock(BloombergPrice.class);
+        IgGroupPrice igGroupPrice = mock(IgGroupPrice.class);
         Vendor vendor = mock(Vendor.class);
         Instrument instrument = mock(Instrument.class);
 
         when(vendorRepository.findById(any())).thenReturn(vendor);
         when(instrumentRepository.findByCode(any())).thenReturn(instrument);
 
-        bloombergPriceService.transform(bloombergPrice);
+        igGroupPriceService.transform(igGroupPrice);
 
-        verify(bloombergPriceTransformer).transform(
-            bloombergPrice,
+        verify(igGroupPriceTransformer).transform(
+            igGroupPrice,
             instrument,
             vendor
         );
@@ -70,12 +70,12 @@ public class BloombergPriceServiceTest {
 
     @Test
     public void transform_returnsFromTransformer() {
-        BloombergPrice bloombergPrice = mock(BloombergPrice.class);
+        IgGroupPrice igGroupPrice = mock(IgGroupPrice.class);
         Price price = mock(Price.class);
 
-        when(bloombergPriceTransformer.transform(any(), any(), any())).thenReturn(price);
+        when(igGroupPriceTransformer.transform(any(), any(), any())).thenReturn(price);
 
-        Price returned = bloombergPriceService.transform(bloombergPrice);
+        Price returned = igGroupPriceService.transform(igGroupPrice);
 
         assertThat(returned).isEqualTo(price);
     }

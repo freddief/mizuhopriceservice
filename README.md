@@ -23,3 +23,7 @@
 -- change jmsComponentAutoAcknowledge?
 
 -- reason for modelling Vendor and Instrument
+
+-- Bring in only required deps for Route tests
+
+-- make FTP a file and split

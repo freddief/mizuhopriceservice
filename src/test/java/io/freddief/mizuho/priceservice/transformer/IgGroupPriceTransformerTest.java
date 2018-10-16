@@ -3,7 +3,8 @@ package io.freddief.mizuho.priceservice.transformer;
 import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.price.CurrencyCode;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
-import io.freddief.mizuho.priceservice.dto.price.BloombergPrice;
+import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice;
+import io.freddief.mizuho.priceservice.dto.price.IgGroupPrice.MonetaryAmount;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,29 +19,32 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 @RunWith(MockitoJUnitRunner.class)
-public class BloombergPriceTransformerTest {
+public class IgGroupPriceTransformerTest {
 
     @Mock
     private InstrumentTransformer instrumentTransformer;
     @Mock
     private VendorTransformer vendorTransformer;
     @InjectMocks
-    private BloombergPriceTransformer bloombergPriceTransformer;
+    private IgGroupPriceTransformer igGroupPriceTransformer;
 
     @Test
     public void transform_transformsInstrument() {
 
         Instrument instrument = mock(Instrument.class);
         Vendor vendor = mock(Vendor.class);
-        BloombergPrice bloombergPrice = new BloombergPrice(
+        IgGroupPrice igGroupPrice = new IgGroupPrice(
             "CODE",
-            BigDecimal.valueOf(12),
-            "GBP"
+            new MonetaryAmount(
+                BigDecimal.valueOf(12),
+                "GBP"
+            )
         );
 
-        bloombergPriceTransformer.transform(
-            bloombergPrice,
+        igGroupPriceTransformer.transform(
+            igGroupPrice,
             instrument,
             vendor
         );
@@ -53,14 +57,15 @@ public class BloombergPriceTransformerTest {
 
         Instrument instrument = mock(Instrument.class);
         Vendor vendor = mock(Vendor.class);
-        BloombergPrice bloombergPrice = new BloombergPrice(
+        IgGroupPrice igGroupPrice = new IgGroupPrice(
             "CODE",
-            BigDecimal.valueOf(12),
-            "GBP"
+            new MonetaryAmount(
+                BigDecimal.valueOf(12),
+                "GBP")
         );
 
-        bloombergPriceTransformer.transform(
-            bloombergPrice,
+        igGroupPriceTransformer.transform(
+            igGroupPrice,
             instrument,
             vendor
         );
@@ -75,17 +80,18 @@ public class BloombergPriceTransformerTest {
         Vendor vendor = mock(Vendor.class);
         io.freddief.mizuho.priceservice.dto.instrument.Instrument dtoinstrument = mock(io.freddief.mizuho.priceservice.dto.instrument.Instrument.class);
         io.freddief.mizuho.priceservice.dto.vendor.Vendor dtoVendor = mock(io.freddief.mizuho.priceservice.dto.vendor.Vendor.class);
-        BloombergPrice bloombergPrice = new BloombergPrice(
+        IgGroupPrice igGroupPrice = new IgGroupPrice(
             "CODE",
-            BigDecimal.valueOf(12),
-            "GBP"
+            new MonetaryAmount(
+                BigDecimal.valueOf(12),
+            "GBP")
         );
 
         when(instrumentTransformer.toDto(instrument)).thenReturn(dtoinstrument);
         when(vendorTransformer.toDto(vendor)).thenReturn(dtoVendor);
 
-        Price returned = bloombergPriceTransformer.transform(
-            bloombergPrice,
+        Price returned = igGroupPriceTransformer.transform(
+            igGroupPrice,
             instrument,
             vendor
         );
