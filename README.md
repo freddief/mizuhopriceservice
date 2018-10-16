@@ -16,5 +16,3 @@
 -- error routing for price topic
 
 -- remove from cache after time expired
-
--- make FTP a file and split

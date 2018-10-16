@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import io.freddief.mizuho.priceservice.domain.instrument.Instrument;
 import io.freddief.mizuho.priceservice.domain.price.Price;
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
@@ -70,16 +71,16 @@ public class Config {
 
     @Bean
     Table<Vendor, Instrument, Price> pricesTable() {
-        return HashBasedTable.create();
+        return Tables.synchronizedTable(HashBasedTable.create());
     }
 
     @Bean
     Map<String, Instrument> instrumentsByIdMap() {
-        return Maps.newHashMap();
+        return Maps.newConcurrentMap();
     }
 
     @Bean
     Map<String, Vendor> vendorsByIdMap() {
-        return Maps.newHashMap();
+        return Maps.newConcurrentMap();
     }
 }
