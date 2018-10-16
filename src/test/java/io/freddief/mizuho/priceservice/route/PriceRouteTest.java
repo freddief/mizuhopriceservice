@@ -6,8 +6,10 @@ import io.freddief.mizuho.priceservice.dto.instrument.Stock;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.dto.vendor.Vendor;
 import io.freddief.mizuho.priceservice.repository.PriceRepository;
+import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.camel.test.spring.MockEndpoints;
 import org.junit.Test;
@@ -38,6 +40,8 @@ public class PriceRouteTest {
 
     @Produce(uri = PriceRoute.PRICES_TOPIC)
     private ProducerTemplate template;
+    @EndpointInject(uri = "mock:" + PriceRoute.DEAD_QUEUE)
+    private MockEndpoint deadQueueEndpoint;
 
     @Test
     public void priceRoute_writesToCache() throws Exception {
@@ -84,6 +88,16 @@ public class PriceRouteTest {
 
             });
 
+    }
+
+    @Test
+    public void priceRoute_whenInvalidMessage_thenRouteToDeadQueue() throws Exception {
+
+        deadQueueEndpoint.expectedMessageCount(1);
+
+        template.sendBody(PriceRoute.PRICES_TOPIC, "Invalid message format");
+
+        deadQueueEndpoint.assertIsSatisfied();
     }
 
 }

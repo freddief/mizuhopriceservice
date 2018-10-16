@@ -15,6 +15,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.camel.test.spring.MockEndpoints;
 import org.apache.camel.test.spring.UseAdviceWith;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,21 +39,28 @@ public class BloombergPriceRouteTest {
     private ObjectMapper objectMapper;
     @EndpointInject(uri = "mock:activemq:topic:prices")
     private MockEndpoint priceEndpoint;
+    @EndpointInject(uri = "mock:" + BloombergPriceRoute.DEAD_QUEUE)
+    private MockEndpoint deadQueueEndpoint;
 
     @Autowired
     private ProducerTemplate template;
 
+    @Before
+    public void setup() throws Exception {
+        if (!camelContext.getStatus().isStarted()) {
+            camelContext.getRouteDefinitions().get(0).adviceWith(camelContext, new AdviceWithRouteBuilder() {
+                @Override
+                public void configure() throws Exception {
+                    replaceFromWith("direct:input");
+                }
+            });
+
+            camelContext.start();
+        }
+    }
+
     @Test
     public void bloombergPriceRoute() throws Exception {
-
-        camelContext.getRouteDefinitions().get(0).adviceWith(camelContext, new AdviceWithRouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                replaceFromWith("direct:input");
-            }
-        });
-
-        camelContext.start();
 
         BloombergPrice bloombergPrice = new BloombergPrice(
             "BARC",
@@ -75,6 +83,16 @@ public class BloombergPriceRouteTest {
         assertThat(price.getVendor()).isEqualTo(new Vendor(BloombergPriceService.BLOOMBERG_VENDOR_ID, "Bloomberg"));
         assertThat(price.getInstrument()).isEqualTo(new Stock("barclaysStockId", "BARC"));
 
+    }
+
+    @Test
+    public void bloombergRoute_whenInvalidMessage_thenRouteToDeadQueue() throws Exception {
+
+        deadQueueEndpoint.expectedMessageCount(1);
+
+        template.sendBody("direct:input", "an invalid message");
+
+        deadQueueEndpoint.assertIsSatisfied();
     }
 
 }

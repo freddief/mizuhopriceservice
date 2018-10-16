@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class IgGroupPriceRoute extends RouteBuilder {
 
     public static final String IG_GROUP_FTP_URI = "ftp://admin@127.0.0.1:12345/file.csv";
+    public static final String DEAD_QUEUE = "activemq:queue:ig-group-prices-dead";
 
     private final IgGroupPriceService igGroupPriceService;
 
@@ -20,15 +21,21 @@ public class IgGroupPriceRoute extends RouteBuilder {
     }
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
+
+        errorHandler(
+            deadLetterChannel(DEAD_QUEUE)
+                .maximumRedeliveries(0));
 
         from(IG_GROUP_FTP_URI)
+            .log("Beginning processing ${body}")
             .split()
             .tokenize("\n")
             .bean(igGroupPriceService, "transform")
             .marshal()
             .json(JsonLibrary.Jackson, Price.class)
-            .to(PriceRoute.PRICES_TOPIC);
+            .to(PriceRoute.PRICES_TOPIC)
+            .log("Processed ${body}");
     }
 
 }

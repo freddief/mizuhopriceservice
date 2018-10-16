@@ -14,6 +14,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.camel.test.spring.MockEndpoints;
 import org.apache.camel.test.spring.UseAdviceWith;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,22 +40,30 @@ public class IgGroupPriceRouteTest {
     private CamelContext camelContext;
     @Autowired
     private ObjectMapper objectMapper;
-    @EndpointInject(uri = "mock:activemq:topic:prices")
+    @EndpointInject(uri = "mock:" + PriceRoute.PRICES_TOPIC)
     private MockEndpoint priceEndpoint;
+    @EndpointInject(uri = "mock:" + IgGroupPriceRoute.DEAD_QUEUE)
+    private MockEndpoint deadQueueEndpoint;
 
     @Autowired
     private ProducerTemplate template;
 
+    @Before
+    public void setup() throws Exception {
+        if (!camelContext.getStatus().isStarted()) {
+            camelContext.getRouteDefinitions().get(1).adviceWith(camelContext, new AdviceWithRouteBuilder() {
+                @Override
+                public void configure() throws Exception {
+                    replaceFromWith("direct:input");
+                }
+            });
+
+            camelContext.start();
+        }
+    }
+
     @Test
     public void igPriceRoute() throws Exception {
-        camelContext.getRouteDefinitions().get(1).adviceWith(camelContext, new AdviceWithRouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                replaceFromWith("direct:input");
-            }
-        });
-
-        camelContext.start();
 
         priceEndpoint.expectedMessageCount(2);
 
@@ -80,6 +89,16 @@ public class IgGroupPriceRouteTest {
         assertThat(price2.getVendor()).isEqualTo(new Vendor(IgGroupPriceService.IG_GROUP_VENDOR_ID, "IG Group"));
         assertThat(price2.getInstrument()).isEqualTo(new Stock("hsbcStockId", "HSBA"));
 
+    }
+
+    @Test
+    public void igPriceRoute_whenInvalidMessage_thenRouteToDeadQueue() throws Exception {
+
+        deadQueueEndpoint.expectedMessageCount(1);
+
+        template.sendBody("direct:input", "an,invalid,csv");
+
+        deadQueueEndpoint.assertIsSatisfied();
     }
 
 }

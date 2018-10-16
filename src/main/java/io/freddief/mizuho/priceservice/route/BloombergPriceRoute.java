@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class BloombergPriceRoute extends RouteBuilder {
 
     public static final String BLOOMBERG_SOCKET = "websocket://127.0.0.1:1234/bloombergPrices";
+    public static final String DEAD_QUEUE = "activemq:queue:bloomberg-prices-dead";
 
     private final BloombergPriceService bloombergPriceService;
 
@@ -21,15 +22,21 @@ public class BloombergPriceRoute extends RouteBuilder {
     }
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
+
+        errorHandler(
+            deadLetterChannel(DEAD_QUEUE)
+                .maximumRedeliveries(0));
 
         from(BLOOMBERG_SOCKET)
+            .log("Beginning processing ${body}")
             .unmarshal()
             .json(JsonLibrary.Jackson, BloombergPrice.class)
             .bean(bloombergPriceService, "transform")
             .marshal()
             .json(JsonLibrary.Jackson, Price.class)
-            .to(PriceRoute.PRICES_TOPIC);
+            .to(PriceRoute.PRICES_TOPIC)
+            .log("Processed ${body}");
     }
 
 }
