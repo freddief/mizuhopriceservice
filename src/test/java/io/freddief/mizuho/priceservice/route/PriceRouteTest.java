@@ -6,13 +6,15 @@ import io.freddief.mizuho.priceservice.dto.instrument.Stock;
 import io.freddief.mizuho.priceservice.dto.price.Price;
 import io.freddief.mizuho.priceservice.dto.vendor.Vendor;
 import io.freddief.mizuho.priceservice.repository.PriceRepository;
-import org.apache.camel.CamelContext;
+import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
+import org.apache.camel.test.spring.MockEndpoints;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -25,19 +27,20 @@ import static org.awaitility.Awaitility.await;
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest
+@DirtiesContext
+@MockEndpoints
 public class PriceRouteTest {
 
-    @Autowired
-    private CamelContext camelContext;
     @Autowired
     private PriceRepository priceRepository;
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Produce(uri = PriceRoute.PRICES_TOPIC)
+    private ProducerTemplate template;
+
     @Test
     public void priceRoute_writesToCache() throws Exception {
-
-        ProducerTemplate template = camelContext.createProducerTemplate();
 
         Price price = new Price(
             "priceId",
