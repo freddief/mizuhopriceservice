@@ -59,6 +59,36 @@ public class InMemoryInstrumentRepositoryTest {
     }
 
     @Test
+    public void findByCode() {
+
+        Bond instrument = new Bond(
+            "id",
+            "code"
+        );
+
+        InMemoryInstrumentRepository repository = new InMemoryInstrumentRepository(Maps.newHashMap());
+
+        repository.add(instrument);
+
+        Instrument returned = repository.findByCode("code");
+
+        assertThat(returned).isEqualTo(
+            new Bond(
+                "id",
+                "code"
+            )
+        );
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void findByCode_whenInstrumentNotFound_thenThrowException() {
+
+        InMemoryInstrumentRepository repository = new InMemoryInstrumentRepository(Maps.newHashMap());
+
+        repository.findByCode("notFoundCode");
+    }
+
+    @Test
     public void constructor_initialisesWithDefaultInstruments() {
 
         InMemoryInstrumentRepository repository = new InMemoryInstrumentRepository(Maps.newHashMap());

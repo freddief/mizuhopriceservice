@@ -8,4 +8,5 @@ public interface InstrumentRepository {
 
     Instrument findById(String id);
 
+    Instrument findByCode(String code);
 }

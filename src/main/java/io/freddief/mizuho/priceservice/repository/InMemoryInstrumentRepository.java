@@ -31,6 +31,16 @@ public class InMemoryInstrumentRepository implements InstrumentRepository {
         });
     }
 
+    @Override
+    public Instrument findByCode(String code) {
+        return instrumentsByIdMap
+            .values()
+            .stream()
+            .filter(i -> i.getCode().equals(code))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException("Instrument with code='%s' not found", code));
+    }
+
     private void init() {
         add(new Stock("barclaysStockId", "BARC"));
         add(new Stock("hsbcStockId", "HSBA"));

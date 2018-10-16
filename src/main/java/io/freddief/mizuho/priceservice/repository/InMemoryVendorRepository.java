@@ -2,6 +2,7 @@ package io.freddief.mizuho.priceservice.repository;
 
 import io.freddief.mizuho.priceservice.domain.vendor.Vendor;
 import io.freddief.mizuho.priceservice.exception.NotFoundException;
+import io.freddief.mizuho.priceservice.service.BloombergPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ public class InMemoryVendorRepository implements VendorRepository {
         this.vendorsByIdMap = vendorsByIdMap;
         init();
     }
+
     @Override
     public void add(Vendor vendor) {
         vendorsByIdMap.put(vendor.getId(), vendor);
@@ -30,7 +32,7 @@ public class InMemoryVendorRepository implements VendorRepository {
     }
 
     private void init() {
-        add(new Vendor("bloombergVendorId", "Bloomberg"));
+        add(new Vendor(BloombergPriceService.BLOOMBERG_VENDOR_ID, "Bloomberg"));
         add(new Vendor("igGroupVendorId", "IG Group"));
     }
 

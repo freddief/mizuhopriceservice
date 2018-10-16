@@ -21,3 +21,5 @@
 -- exception Mockito matchers?
 
 -- change jmsComponentAutoAcknowledge?
+
+-- reason for modelling Vendor and Instrument
