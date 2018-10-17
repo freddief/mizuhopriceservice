@@ -55,6 +55,12 @@ Plant UML used to create diagrams (.puml). Diagrams have been exported to .png
 * Sequence diagram in `./docs`
 * Class diagram in `./docs`
 
+## Problems faced
+
+* I struggled to mock out the ftp and socket Camel components for the tests and ended up using @UseAdviceWith to override the endpoints as a solution.
+* I tried to use Kafka as a message broker but had trouble with the setup so I opted to use Active MQ instead as I didn't want to spend too much time on the setup.
+* I also tried to use Spring Integration but had similar problems with the setup so I opted to use Camel instead to save time.
+
 ## Building
 
 * `./mvnw clean install` UNIX
