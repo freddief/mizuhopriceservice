@@ -1,0 +1,62 @@
+@startuml
+Instrument --> "1" InstrumentType
+Bond --|> Instrument
+Stock --|> Instrument
+Derivative --|> Instrument
+Price --> "1" CurrencyCode
+Price --> "1" Instrument
+Price --> "1" Vendor
+
+interface Instrument{
+  String getId()
+  String getCode()
+  InstrumentType getType()
+}
+
+enum InstrumentType {
+  STOCK,
+  BOND,
+  DERIVATIVE
+}
+class Bond{
+  String id
+  String code
+}
+
+class Stock{
+  String id
+  String code
+}
+
+class Derivative{
+  String id
+  String code
+}
+
+class Vendor {
+  String id
+  String name
+  String getId()
+  String getName()
+}
+
+class Price {
+  String id;
+  Instrument instrument;
+  Vendor vendor;
+  Instant timestamp;
+  BigDecimal price;
+  CurrencyCode currencyCode;
+  String getId()
+  Instrument getInstrument()
+  Vendor getVendor()
+  Instant getTimestamp()
+  BigDecimal getPrice()
+  CurrencyCode getCurrencyCode()
+}
+
+enum CurrencyCode {
+  GBP
+}
+
+@enduml

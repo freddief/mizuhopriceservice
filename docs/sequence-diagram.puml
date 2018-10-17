@@ -1,0 +1,15 @@
+@startuml
+actor "Client"
+boundary "REST"
+participant "Vendor Component"
+participant "Price Topic"
+database "Cache"
+participant "Downstream"
+"Vendor Component" -> "Price Topic": "publish"
+"Price Topic" -> "Cache" : "consume"
+"Price Topic" -> "Downstream" : "consume"
+"Client" -> "REST" : "Prices request"
+"REST" -> "Cache": "Prices request"
+"Cache" -> "REST": "Prices response"
+"REST" -> "Client": "Prices response"
+@enduml
