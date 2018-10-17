@@ -57,6 +57,7 @@ Plant UML used to create diagrams (.puml). Diagrams have been exported to .png
 
 ## Building
 
-* `./mvnw clean install`
+* `./mvnw clean install` UNIX
+* `mvnw.cmd clean install` Windows
 
 
