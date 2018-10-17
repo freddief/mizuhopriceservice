@@ -47,13 +47,14 @@ Take home project for Mizuho ESB role
 * Java docs where required
 * Logback and better logging
 * Dockerise for use in containerised environment
+* There is a potential race condition between the downstream clients receiving a Price and it being available in the cache. This could be enhanced by using another topic so that the price cache is updated before publishing to downstream systems.
 
 ## UML
 
 Plant UML used to create diagrams (.puml). Diagrams have been exported to .png
 
-* Sequence diagram in `./docs`
-* Class diagram in `./docs`
+* Sequence diagram - https://github.com/whaletechnology/mizuhopriceservice/blob/master/docs/sequence-diagram.png
+* Class diagram - https://github.com/whaletechnology/mizuhopriceservice/blob/master/docs/class-diagram.png
 
 ## Problems faced
 
