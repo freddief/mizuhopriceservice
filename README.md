@@ -16,7 +16,7 @@ Take home project for Mizuho ESB role
 
 ## Design decisions
 
-* Camel as an EIS framework
+* Camel as an EIP framework
 * Active MQ as a message broker
 * Domain models used for internal persistence
 * Inheritance structure for modelling Instruments
@@ -50,8 +50,7 @@ Take home project for Mizuho ESB role
 
 ## UML
 
-Plant UML used to create diagrams (.puml)
-Diagrams have been exported to .png
+Plant UML used to create diagrams (.puml). Diagrams have been exported to .png
 
 * Sequence diagram in `./docs`
 * Class diagram in `./docs`
